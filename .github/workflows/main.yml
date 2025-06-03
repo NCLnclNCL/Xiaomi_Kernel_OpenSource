@@ -14,7 +14,7 @@ jobs:
     - name: 🛠️ Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y build-essential bc bison flex libssl-dev libelf-dev ccache python3 7z
+        sudo apt install -y build-essential bc bison flex libssl-dev libelf-dev ccache python3
 
     - name: 📦 Download and extract ZyC Clang 11.1.0
       run: |
