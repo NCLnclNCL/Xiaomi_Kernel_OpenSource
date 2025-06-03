@@ -22,8 +22,9 @@ jobs:
         cd $GITHUB_WORKSPACE/toolchains
         wget https://github.com/ZyCromerZ/Clang/releases/download/11.1.0-20220724-release/Clang-11.1.0-20220724.tar.gz
         tar -xzf Clang-11.1.0-20220724.tar.gz
-        mv Clang-11.1.0-20220724.tar clang
-
+        CLANG_DIR=$(tar -tzf Clang-11.1.0-20220724.tar.gz | head -1 | cut -f1 -d"/")
+        mv "$CLANG_DIR" clang
+       
     - name: 🔧 Set environment variables
       run: |
         echo "KERNEL_DIR=$GITkernel-imageE" >> $GITHUB_ENV
