@@ -14,12 +14,11 @@ jobs:
     - name: 🛠️ Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y build-essential bc bison flex libssl-dev libelf-dev ccache python3
-
+        sudo apt-get install --no-install-recommends -y binutils git make bc bison openssl curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev libc6-dev device-tree-compiler ca-certificates python3 xz-utils libc6-dev aria2 build-essential ccache pigz
     - name: 📦 Download and extract ZyC Clang 11.1.0
       run: |
 
-        wget https://github.com/ZyCromerZ/Clang/releases/download/11.1.0-20220724-release/Clang-15.0.7-20242https://github.com/ZyCromerZ/Clang/releases/download/11.1.0-20220724-release/Clang-11.1.0-20220724.tar.gz
+        wget https://github.com/ZyCromerZ/Clang/releases/download/11.1.0-20220724-release/Clang-11.1.0-20220724.tar.gz
         7z x Clang-11.1.0-20220724.tar.gz
         7z x Clang-11.1.0-20220724.tar
        
