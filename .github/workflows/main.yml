@@ -22,7 +22,7 @@ jobs:
         cd $GITHUB_WORKSPACE/toolchains
         wget https://github.com/ZyCromerZ/Clang/releases/download/11.1.0-20220724-release/Clang-11.1.0-20220724.tar.gz
         tar -xzf Clang-11.1.0-20220724.tar.gz
-        mv Clang-11.1.0-20220724 clang
+        mv Clang-11.1.0-20220724.tar clang
 
     - name: 🔧 Set environment variables
       run: |
