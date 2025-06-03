@@ -19,9 +19,9 @@ jobs:
     - name: 📦 Download and extract ZyC Clang 11.1.0
       run: |
 
-        wget https://github.com/ZyCromerZ/Clang/releases/download/11.1.0-20220724-release/Clang-11.1.0-20220724.tar.gz
-        7z x Clang-11.1.0-20220724.tar.gz
-        7z x Clang-11.1.0-20220724.tar
+        wget https://github.com/ZyCromerZ/Clang/releases/download/15.0.7-20240620-release/Clang-15.0.7-20240620.tar.gz
+        7z x Clang-15.0.7-20240620.tar.gz
+        7z x Clang-15.0.7-20240620.tar
        
     - name: 🔧 Set environment variables
       run: |
