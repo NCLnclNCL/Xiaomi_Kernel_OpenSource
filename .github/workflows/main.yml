@@ -34,7 +34,7 @@ jobs:
       run: |
         export PATH=/home/runner/work/Clang-11.1.0-20220724.tar/bin:$PATH
         ls $GITHUB_WORKSPACE
-        ls /home/runner/work/Clang-11.1.0-20220724.tar/bin
+        ls /home/runner/work/Clang-11.1.0-20220724.tar
         make O=out ARCH=arm64 rosemary_defconfig
         make -j$(nproc) O=out ARCH=arm64 \
             CC=clang \
