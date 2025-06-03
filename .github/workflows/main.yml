@@ -32,10 +32,9 @@ jobs:
 
     - name: 🔨 Build kernel
       run: |
-        export PATH=/home/runner/work/Clang-11.1.0-20220724.tar.gz/bin:$PATH
-        ls /home/runner/work/
+        export PATH=/home/runner/work/Clang-11.1.0-20220724.tar/bin:$PATH
         ls $GITHUB_WORKSPACE
-        ls /home/runner/work/Clang-11.1.0-20220724.tar.gz/bin
+        ls /home/runner/work/Clang-11.1.0-20220724.tar/bin
         make O=out ARCH=arm64 rosemary_defconfig
         make -j$(nproc) O=out ARCH=arm64 \
             CC=clang \
