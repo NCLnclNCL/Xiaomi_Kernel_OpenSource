@@ -47,7 +47,7 @@ jobs:
             OBJDUMP=llvm-objdump
 
     - name: 📁 Upload zImage/Image.gz (tùy kernel)
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: kernel-image
         path: |
