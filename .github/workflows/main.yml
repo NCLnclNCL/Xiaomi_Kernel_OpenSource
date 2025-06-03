@@ -21,7 +21,7 @@ jobs:
 
         wget https://github.com/ZyCromerZ/Clang/releases/download/11.1.0-20220724-release/Clang-11.1.0-20220724.tar.gz
         7z x Clang-11.1.0-20220724.tar.gz
-   
+        7z x Clang-11.1.0-20220724.tar
        
     - name: 🔧 Set environment variables
       run: |
@@ -32,9 +32,9 @@ jobs:
 
     - name: 🔨 Build kernel
       run: |
-        export PATH=/home/runner/work/Clang-11.1.0-20220724.tar/bin:$PATH
+        export PATH=/home/runner/work/Clang-11.1.0-20220724/bin:$PATH
         ls $GITHUB_WORKSPACE
-        ls /home/runner/work/Clang-11.1.0-20220724.tar
+        ls /home/runner/work/Clang-11.1.0-20220724
         make O=out ARCH=arm64 rosemary_defconfig
         make -j$(nproc) O=out ARCH=arm64 \
             CC=clang \
