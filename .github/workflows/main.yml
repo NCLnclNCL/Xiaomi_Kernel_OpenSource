@@ -1,0 +1,54 @@
+name: Build Android Kernel with ZyC Clang
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 🧾 Checkout kernel source
+      uses: actions/checkout@v3
+
+    - name: 🛠️ Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y build-essential bc bison flex libssl-dev libelf-dev ccache python
+
+    - name: 📦 Download and extract ZyC Clang 11.1.0
+      run: |
+        mkdir -p $GITHUB_WORKSPACE/toolchains
+        cd $GITHUB_WORKSPACE/toolchains
+        wget https://github.com/ZyCromerZ/Clang/releases/download/11.1.0-20220724-release/Clang-11.1.0-20220724.tar.gz
+        tar -xzf Clang-11.1.0-20220724.tar.gz
+        mv Clang-11.1.0-20220724 clang
+
+    - name: 🔧 Set environment variables
+      run: |
+        echo "KERNEL_DIR=$GITkernel-imageE" >> $GITHUB_ENV
+        echo "CLANG_PATH=$GITHUB_WORKSPACE/toolchains/clang" >> $GITHUB_ENV
+        echo "CROSS_COMPILE=aarch64-linux-gnu-" >> $GITHUB_ENV
+        echo "CROSS_COMPILE_ARM32=arm-linux-gnueabi-" >> $GITHUB_ENV
+
+    - name: 🔨 Build kernel
+      run: |
+        export PATH=$CLANG_PATH/bin:$PATH
+        make O=out ARCH=arm64 rosemary_defconfig
+        make -j$(nproc) O=out ARCH=arm64 \
+            CC=clang \
+            CROSS_COMPILE=${CROSS_COMPILE} \
+            CROSS_COMPILE_ARM32=${CROSS_COMPILE_ARM32} \
+            CC=clang \
+            LD=ld.lld \
+            NM=llvm-nm \
+            AR=llvm-ar \
+            OBJCOPY=llvm-objcopy \
+            OBJDUMP=llvm-objdump
+
+    - name: 📁 Upload zImage/Image.gz (tùy kernel)
+      uses: actions/upload-artifact@v3
+      with:
+        name: kernel-image
+        path: |
+          out/arch/arm64/boot/Image.gz-dtb 
