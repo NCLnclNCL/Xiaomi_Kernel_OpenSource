@@ -3378,6 +3378,8 @@ static int do_last(struct nameidata *nd,
 		   int *opened)
 {
 	struct dentry *dir = nd->path.dentry;
+	umode_t dir_mode = nd->inode->i_mode;
+	kuid_t dir_uid = nd->inode->i_uid;
 	int open_flag = op->open_flag;
 	bool will_truncate = (open_flag & O_TRUNC) != 0;
 	bool got_write = false;
