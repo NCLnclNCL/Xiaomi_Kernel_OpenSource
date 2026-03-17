@@ -713,8 +713,8 @@ else
 KBUILD_CFLAGS   += -O2
 endif
 endif
-KBUILD_CFLAGS += -march=armv8-a -mcpu=cortex-a53 -mtune=cortex-a53
-KBUILD_AFLAGS += -march=armv8-a -mcpu=cortex-a53 -mtune=cortex-a53
+KBUILD_CFLAGS += -march=armv8-a+crc -mcpu=cortex-a53+crc -mtune=cortex-a53
+KBUILD_AFLAGS += -march=armv8-a+crc -mcpu=cortex-a53+crc -mtune=cortex-a53
 
 KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0409, \
 			$(call cc-disable-warning,maybe-uninitialized,))
