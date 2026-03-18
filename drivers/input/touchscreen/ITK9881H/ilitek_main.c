@@ -2,7 +2,7 @@
  * ILITEK Touch IC driver
  *
  * Copyright (C) 2011 ILI Technology Corporation.
- * Copyright (C) 2021 XiaoMi, Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * Author: Dicky Chiang <dicky_chiang@ilitek.com>
  *
@@ -267,14 +267,14 @@ static void ilitek_tddi_wq_bat_check(struct work_struct *work)
 		|| strnstr(str, "Fully charged", 0) != NULL) {
 		if (charge_mode != 1) {
 			ipio_debug("Charging mode\n");
-			if (ilitek_tddi_ic_func_ctrl("plug", DISABLE) < 0) // plug in
+			if (ilitek_tddi_ic_func_ctrl("plug", DISABLE) < 0)
 				ipio_err("Write plug in failed\n");
 			charge_mode = 1;
 		}
 	} else {
 		if (charge_mode != 2) {
 			ipio_debug("Not charging mode\n");
-			if (ilitek_tddi_ic_func_ctrl("plug", ENABLE) < 0) // plug out
+			if (ilitek_tddi_ic_func_ctrl("plug", ENABLE) < 0)
 				ipio_err("Write plug out failed\n");
 			charge_mode = 2;
 		}
@@ -611,12 +611,10 @@ void ilitek_tddi_report_handler(void)
 	switch (pid) {
 	case P5_X_LARGE_AREA_PRESS_PACKET_ID:
 		ipio_info(" Demo LARGE_AREA PRESS_PACKET_ID \n");
-#if 0
 		input_report_key(idev->input, 523, 1);
 		input_sync(idev->input);
 		input_report_key(idev->input, 523, 0);
 		input_sync(idev->input);
-#endif
 		break;
 	case P5_X_LARGE_AREA_RELEASE_PACKET_ID:
 		ipio_info(" Demo LARGE_AREA RELEASE_PACKET_ID \n");
