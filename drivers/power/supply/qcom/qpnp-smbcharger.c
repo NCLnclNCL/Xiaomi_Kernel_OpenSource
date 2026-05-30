@@ -3786,7 +3786,7 @@ static void smbchg_external_power_changed(struct power_supply *psy)
 	int rc, soc;
 
 	smbchg_aicl_deglitch_wa_check(chip);
-
+p_info("charge_test");
 	if (is_bms_psy_present(chip)) {
 		check_battery_type(chip);
 		soc = get_prop_batt_capacity(chip);
