@@ -1910,7 +1910,7 @@ static int qg_charge_full_update(struct qpnp_qg *chip)
 	}
 	recharge_soc = prop.intval;
 	chip->recharge_soc = recharge_soc;
-	pr_info("charge_test 3");
+
 	qg_dbg(chip, QG_DEBUG_STATUS, "msoc=%d health=%d charge_full=%d charge_done=%d\n",
 				chip->msoc, health, chip->charge_full,
 				chip->charge_done);
@@ -2143,11 +2143,6 @@ static int set_prop_disable_charging(struct qpnp_qg *chip, bool enable)
 	int rc = 0;
 	union power_supply_propval ret = {enable, };
 
-	if (!is_charger_available(chip)) {
-		pr_err("Charger not available yet!\n");
-		return -EINVAL;
-	}
-
 	rc = power_supply_set_property(chip->batt_psy,
 			POWER_SUPPLY_PROP_BATTERY_CHARGING_ENABLED,
 			&ret);
@@ -2169,7 +2164,7 @@ static int s_pingpong = 1;
 	int lowerbd = chip->charge_start_level;
 	if (chip == NULL)
 	{
-		chr_err("chip==NULL\n");
+		pr_err("chip==NULL\n");
 		return disable_charging;
 	}
 pr_info("%s: info -- lowerbd=%d, upperbd=%d, capacity=%d\n",
