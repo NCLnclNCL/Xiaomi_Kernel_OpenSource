@@ -162,5 +162,8 @@ config SMB1390_CHARGE_PUMP
 	  Say Y to include support for SMB1390 Charge Pump.
 	  SMB1390 is a div2 charge pump capable of delivering 6A charge current
 	  with very high efficiency.
-
+config LIMIT_CHARGER
+	bool "LIMIT BATTERY CHARGER"
+	help
+	  enable stop charge level.
 endmenu

@@ -2137,6 +2137,100 @@ done:
 	return rc;
 }
 
+#ifdef CONFIG_LIMIT_CHARGER
+static int set_prop_disable_charging(struct qpnp_qg *chip, bool enable)
+{
+	int rc = 0;
+	union power_supply_propval ret = {enable, };
+
+	if (!is_charger_available(chip)) {
+		pr_err("Charger not available yet!\n");
+		return -EINVAL;
+	}
+
+	rc = power_supply_set_property(chip->batt_psy,
+			POWER_SUPPLY_PROP_BATTERY_CHARGING_ENABLED,
+			&ret);
+	if (rc) {
+		pr_err("couldn't configure batt chg %d\n", rc);
+		return rc;
+	}
+
+	chip->charging_disabled = enable;
+	return rc;
+}
+
+//start
+static int is_charging_disabled(struct qpnp_qg *chip, int capacity)
+{
+static int s_pingpong = 1;
+	int disable_charging = 0;
+	int upperbd = chip->charge_stop_level;
+	int lowerbd = chip->charge_start_level;
+	if (chip == NULL)
+	{
+		chr_err("chip==NULL\n");
+		return disable_charging;
+	}
+pr_info("%s: info -- lowerbd=%d, upperbd=%d, capacity=%d\n",
+				__func__, lowerbd, upperbd, capacity);
+				
+	if ((upperbd == DEFAULT_CHARGE_STOP_LEVEL) &&
+	    (lowerbd == DEFAULT_CHARGE_START_LEVEL))
+		return 0;
+	if (upperbd < capacity)
+		return 0;
+	if ((upperbd > lowerbd) &&
+	    (upperbd <= DEFAULT_CHARGE_STOP_LEVEL) &&
+	    (lowerbd >= DEFAULT_CHARGE_START_LEVEL)) {
+	   
+		if (s_pingpong == 1 && upperbd <= capacity) {
+			pr_info("%s: lowerbd=%d, upperbd=%d, capacity=%d, s_pingpong=%d\n",
+				__func__, lowerbd, upperbd, capacity,s_pingpong );
+			disable_charging = 1;
+		if((chip->charging_disabled == false)||s_pingpong==1)
+		{
+set_prop_disable_charging(chip,0);
+		}
+		s_pingpong = 0;
+		} else if (s_pingpong == 0  && lowerbd < capacity) {
+			pr_info("%s: lowerbd=%d, upperbd=%d, capacity=%d, charging off\n",
+				__func__, lowerbd, upperbd, capacity);
+			disable_charging = 1;
+		if(chip->charging_disabled == false)
+		{
+set_prop_disable_charging(chip,0);
+		}
+		
+		} else if (s_pingpong == 0 && capacity <= lowerbd) {
+			pr_info("%s: lowerbd=%d, upperbd=%d, capacity=%d, s_pingpong=0->1, charging on\n",
+		__func__, lowerbd, upperbd, capacity);
+			
+		
+		if((chip->charging_disabled == true)||s_pingpong==0)
+		{
+set_prop_disable_charging(chip,1);
+		}
+		s_pingpong = 1;
+		} else {
+			pr_info("%s: lowerbd=%d, upperbd=%d, capacity=%d, s_pingpong=%d charging on\n",
+				__func__, lowerbd, upperbd, capacity,s_pingpong );
+		if(chip->charging_disabled == true)
+		{
+set_prop_disable_charging(chip,1);
+		}
+
+		}
+	}
+	return disable_charging;
+}
+static void chg_work(struct qpnp_qg *chip)
+{
+	int disable_charging = 0;
+	disable_charging = is_charging_disabled(chip, chip->msoc);
+;
+}
+#endif
 
 static void qg_status_change_work(struct work_struct *work)
 {
@@ -2233,6 +2327,7 @@ static void qg_status_change_work(struct work_struct *work)
 	}
 
 	rc = qg_charge_full_update(chip);
+	chg_work(chip);
 	if (rc < 0)
 		pr_err("Failed in charge_full_update, rc=%d\n", rc);
 
@@ -3598,6 +3693,11 @@ static int qg_parse_dt(struct qpnp_qg *chip)
 
 	chip->dt.qg_vbms_mode = of_property_read_bool(node,
 					"qcom,qg-vbms-mode");
+#ifdef CONFIG_LIMIT_CHARGER
+	chip->charge_stop_level = DEFAULT_CHARGE_STOP_LEVEL;
+	chip->charge_start_level = DEFAULT_CHARGE_START_LEVEL;
+	
+#endif
 
 	qg_dbg(chip, QG_DEBUG_PON, "DT: vbatt_empty_mv=%dmV vbatt_low_mv=%dmV delta_soc=%d ext-sns=%d qg_vbms_mode=%d\n",
 			chip->dt.vbatt_empty_mv, chip->dt.vbatt_low_mv,

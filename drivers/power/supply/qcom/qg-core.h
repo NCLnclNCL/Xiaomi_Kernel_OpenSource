@@ -16,7 +16,10 @@
 #include <linux/kernel.h>
 #include "fg-alg.h"
 #include "qg-defs.h"
-
+#ifdef CONFIG_LIMIT_CHARGER
+#define DEFAULT_CHARGE_STOP_LEVEL 100
+#define DEFAULT_CHARGE_START_LEVEL 0
+#endif
 struct qg_batt_props {
 	const char		*batt_type_str;
 	int			float_volt_uv;
@@ -166,6 +169,11 @@ struct qpnp_qg {
 	struct ttf		*ttf;
 	/* batt_id*/
 	int			batt_id;
+#ifdef CONFIG_LIMIT_CHARGER
+	int charge_stop_level;		/* retail, userspace bd config */
+	int charge_start_level;		/* retail, userspace bd config */
+	bool charging_disabled;
+#endif
 };
 
 struct ocv_all {
