@@ -1000,7 +1000,6 @@ static int pl_disable_vote_callback(struct votable *votable,
 	}
 	chip->fcc_stepper_enable = pval.intval;
 	pr_debug("FCC Stepper %s\n", pval.intval ? "enabled" : "disabled");
-
 	if (chip->fcc_stepper_enable) {
 		cancel_delayed_work_sync(&chip->fcc_stepper_work);
 		vote(chip->pl_awake_votable, FCC_STEPPER_VOTER, false, 0);

@@ -3786,7 +3786,7 @@ static void smbchg_external_power_changed(struct power_supply *psy)
 	int rc, soc;
 
 	smbchg_aicl_deglitch_wa_check(chip);
-
+pr_info("charge_test");
 	if (is_bms_psy_present(chip)) {
 		check_battery_type(chip);
 		soc = get_prop_batt_capacity(chip);
@@ -4439,6 +4439,7 @@ reschedule:
 
 static int smbchg_charging_status_change(struct smbchg_chip *chip)
 {
+	pr_info("charge_test 2");
 	smbchg_vfloat_adjust_check(chip);
 	set_property_on_fg(chip, POWER_SUPPLY_PROP_STATUS,
 			get_prop_batt_status(chip));
