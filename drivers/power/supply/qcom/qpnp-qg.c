@@ -2164,7 +2164,7 @@ static int s_pingpong = 1;
 	int lowerbd = chip->charge_start_level;
 	if (chip == NULL)
 	{
-		pr_err("chip==NULL\n");
+		chr_err("chip==NULL\n");
 		return disable_charging;
 	}
 pr_info("%s: info -- lowerbd=%d, upperbd=%d, capacity=%d\n",
@@ -3688,11 +3688,6 @@ static int qg_parse_dt(struct qpnp_qg *chip)
 
 	chip->dt.qg_vbms_mode = of_property_read_bool(node,
 					"qcom,qg-vbms-mode");
-#ifdef CONFIG_LIMIT_CHARGER
-	chip->charge_stop_level = DEFAULT_CHARGE_STOP_LEVEL;
-	chip->charge_start_level = DEFAULT_CHARGE_START_LEVEL;
-	
-#endif
 
 	qg_dbg(chip, QG_DEBUG_PON, "DT: vbatt_empty_mv=%dmV vbatt_low_mv=%dmV delta_soc=%d ext-sns=%d qg_vbms_mode=%d\n",
 			chip->dt.vbatt_empty_mv, chip->dt.vbatt_low_mv,
@@ -3924,7 +3919,80 @@ static const struct dev_pm_ops qpnp_qg_pm_ops = {
 	.suspend	= qpnp_qg_suspend,
 	.resume		= qpnp_qg_resume,
 };
+#ifdef CONFIG_LIMIT_CHARGER
+static ssize_t show_charge_start_level(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+//struct charger_manager *pinfo = dev->driver_data;
+struct qpnp_qg *chip =
+        dev_get_drvdata(dev);
+	pr_debug("[Battery] show_charge_start_level:  %d\n", chip->charge_start_level);
 
+	return sprintf(buf, "%u\n", chip->charge_start_level);
+}
+
+static ssize_t store_charge_start_level(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t size)
+{
+//struct charger_manager *pinfo = dev->driver_data;
+struct qpnp_qg *chip =
+        dev_get_drvdata(dev);
+ int reg = 0;
+	int ret;
+	pr_debug("[Battery] store_charge_start_level\n");
+	if (buf != NULL && size != 0) {
+		pr_debug("[Battery] buf is %s and size is %zu\n", buf, size);
+		ret = kstrtouint(buf, 10, &reg);
+	chip->charge_start_level = reg;
+	pr_info("[Battery] store code regs : %d\n", reg);
+	pr_info("[Battery] store code store_charge_start_level:  %d\n", chip->charge_start_level);
+//mtk_chgstat_notify(pinfo);
+	}
+	//if (pinfo->battery_psy)
+	//	power_supply_changed(chip->battery_psy);
+	//if (pinfo->bms_psy)
+	//	power_supply_changed(chip->bms_psy);
+	return size;
+}
+static DEVICE_ATTR(charge_start_level, 0644, show_charge_start_level, store_charge_start_level);
+//stop
+static ssize_t show_charge_stop_level(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+//struct charger_manager *pinfo = dev->driver_data;
+struct qpnp_qg *chip =
+        dev_get_drvdata(dev);
+	pr_debug("[Battery] show_charge_stop_level: %d\n", chip->charge_stop_level);
+
+	return sprintf(buf, "%u\n", chip->charge_stop_level);
+}
+
+static ssize_t store_charge_stop_level(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t size)
+{
+//struct charger_manager *pinfo = dev->driver_data;
+struct qpnp_qg *chip =
+        dev_get_drvdata(dev);
+	 int reg = 0;
+	int ret;
+	pr_debug("[Battery] store_charge_stop_level\n");
+	if (buf != NULL && size != 0) {
+		pr_debug("[Battery] buf is %s and size is %zu\n", buf, size);
+		ret = kstrtouint(buf, 10, &reg);
+	chip->charge_stop_level = reg;
+	pr_info("[Battery] store code reg : %d\n", reg);
+	pr_info("[Battery] store code store_charge_stop_level : %d\n", chip->charge_stop_level);
+	}
+	//if (pinfo->battery_psy)
+	//	power_supply_changed(chip->battery_psy);
+	//if (pinfo->bms_psy)
+	//	power_supply_changed(chip->bms_psy);
+	return size;
+}
+//
+
+static DEVICE_ATTR(charge_stop_level, 0644, show_charge_stop_level, store_charge_stop_level);
+#endif
 static int qpnp_qg_probe(struct platform_device *pdev)
 {
 	int rc = 0, soc = 0, nom_cap_uah;
@@ -3968,7 +4036,17 @@ static int qpnp_qg_probe(struct platform_device *pdev)
 	chip->soh = -EINVAL;
 	chip->esr_actual = -EINVAL;
 	chip->esr_nominal = -EINVAL;
-
+#ifdef CONFIG_LIMIT_CHARGER
+	chip->charge_stop_level = DEFAULT_CHARGE_STOP_LEVEL;
+	chip->charge_start_level = DEFAULT_CHARGE_START_LEVEL;
+	
+	ret = device_create_file(&(pdev->dev), &dev_attr_charge_start_level);
+	if (rc)
+		pr_err("failed to create start_level\n");
+	ret = device_create_file(&(pdev->dev), &dev_attr_charge_stop_level);
+	if (rc)
+		pr_err("failed to create stop_level\n");
+#endif
 	rc = qg_alg_init(chip);
 	if (rc < 0) {
 		pr_err("Error in alg_init, rc:%d\n", rc);
