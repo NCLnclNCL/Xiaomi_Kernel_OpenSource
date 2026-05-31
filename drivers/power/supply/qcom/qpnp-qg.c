@@ -1910,7 +1910,7 @@ static int qg_charge_full_update(struct qpnp_qg *chip)
 	}
 	recharge_soc = prop.intval;
 	chip->recharge_soc = recharge_soc;
-
+	pr_info("charge_test 3");
 	qg_dbg(chip, QG_DEBUG_STATUS, "msoc=%d health=%d charge_full=%d charge_done=%d\n",
 				chip->msoc, health, chip->charge_full,
 				chip->charge_done);
