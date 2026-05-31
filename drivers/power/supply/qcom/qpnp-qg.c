@@ -2164,7 +2164,7 @@ static int s_pingpong = 1;
 	int lowerbd = chip->charge_start_level;
 	if (chip == NULL)
 	{
-		chr_err("chip==NULL\n");
+		pr_err("chip==NULL\n");
 		return disable_charging;
 	}
 pr_info("%s: info -- lowerbd=%d, upperbd=%d, capacity=%d\n",
