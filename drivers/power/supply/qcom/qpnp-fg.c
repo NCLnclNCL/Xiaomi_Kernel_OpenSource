@@ -4015,7 +4015,7 @@ static void status_change_work(struct work_struct *work)
 			pr_info("Battery is missing\n");
 		return;
 	}
-
+	pr_info("charge_test 4");
 	if (chip->esr_pulse_tune_en) {
 		fg_stay_awake(&chip->esr_extract_wakeup_source);
 		schedule_work(&chip->esr_extract_config_work);
