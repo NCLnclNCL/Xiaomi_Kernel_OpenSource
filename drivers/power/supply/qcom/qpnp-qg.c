@@ -4040,10 +4040,10 @@ static int qpnp_qg_probe(struct platform_device *pdev)
 	chip->charge_stop_level = DEFAULT_CHARGE_STOP_LEVEL;
 	chip->charge_start_level = DEFAULT_CHARGE_START_LEVEL;
 	
-	ret = device_create_file(&(pdev->dev), &dev_attr_charge_start_level);
+	rc = device_create_file(&(pdev->dev), &dev_attr_charge_start_level);
 	if (rc)
 		pr_err("failed to create start_level\n");
-	ret = device_create_file(&(pdev->dev), &dev_attr_charge_stop_level);
+	rc = device_create_file(&(pdev->dev), &dev_attr_charge_stop_level);
 	if (rc)
 		pr_err("failed to create stop_level\n");
 #endif
